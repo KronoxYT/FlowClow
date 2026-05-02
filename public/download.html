@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d0d14" />
+  <title>FlowClock — Descarga</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0d0d14;
+      --surface: #13131f;
+      --surface2: #1a1a2e;
+      --border: rgba(255,255,255,0.07);
+      --accent: #4f8cff;
+      --accent2: #a78bfa;
+      --text: #e8e8f0;
+      --muted: #6b6b8a;
+      --success: #34d399;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* ─── Background glow ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 10%, rgba(79,140,255,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 80% 80%, rgba(167,139,250,0.06) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    /* ─── Header ── */
+    .header {
+      text-align: center;
+      padding: 60px 0 48px;
+    }
+
+    .app-icon {
+      width: 100px;
+      height: 100px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #1e2a4a 0%, #2a1a4e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 52px;
+      box-shadow: 0 8px 32px rgba(79,140,255,0.2), 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .app-name {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .app-name span:first-child { color: var(--text); }
+    .app-name span:last-child { color: var(--accent); }
+
+    .tagline {
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-weight: 300;
+      letter-spacing: 0.01em;
+    }
+
+    /* ─── Version badge ── */
+    .version-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(79,140,255,0.12);
+      border: 1px solid rgba(79,140,255,0.25);
+      color: var(--accent);
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-size: 0.8rem;
+      font-family: 'Space Mono', monospace;
+      margin-top: 16px;
+    }
+
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* ─── Download Cards ── */
+    .download-section {
+      margin: 0 0 40px;
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 520px) {
+      .cards { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .card:hover {
+      border-color: rgba(79,140,255,0.3);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, #6ea8ff 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(79,140,255,0.35);
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.18); }
+
+    .btn-loading {
+      opacity: 0.6;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* ─── Latest Release Info ── */
+    #release-info {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+
+    .release-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .release-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .release-date {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .release-body {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    .release-assets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .asset-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: rgba(79,140,255,0.1);
+      border: 1px solid rgba(79,140,255,0.2);
+      border-radius: 10px;
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .asset-btn:hover {
+      background: rgba(79,140,255,0.18);
+      border-color: rgba(79,140,255,0.4);
+    }
+
+    /* ─── Instructions ── */
+    .steps {
+      counter-reset: step;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 20px;
+    }
+
+    .step-num {
+      counter-increment: step;
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .step-num::after { content: counter(step); }
+
+    .step-content h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .step-content p {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .step-content code {
+      background: rgba(255,255,255,0.07);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 0.8rem;
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* ─── Footer ── */
+    .footer {
+      text-align: center;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer a:hover { text-decoration: underline; }
+
+    /* ─── Loading skeleton ── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+      height: 1em;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="app-icon">⏳</div>
+      <h1 class="app-name">
+        <span>Flow</span><span>Clock</span>
+      </h1>
+      <p class="tagline">Tu tiempo, en flujo</p>
+      <div class="version-badge">
+        <span class="dot"></span>
+        <span id="version-label">Cargando versión...</span>
+      </div>
+    </header>
+
+    <!-- Latest Release downloads (from GitHub API) -->
+    <div class="download-section">
+      <p class="section-title">Última versión disponible</p>
+      <div id="release-info">
+        <div class="skeleton" style="width:40%; height:1.2em; margin-bottom:10px;"></div>
+        <div class="skeleton" style="width:70%; height:0.9em; margin-bottom:6px;"></div>
+        <div class="skeleton" style="width:55%; height:0.9em;"></div>
+        <div class="release-assets hidden" id="release-assets"></div>
+      </div>
+    </div>
+
+    <!-- Quick download cards -->
+    <div class="download-section">
+      <p class="section-title">Descarga directa</p>
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">📱</div>
+          <h3 class="card-title">APK Debug</h3>
+          <p class="card-desc">Para instalar directamente en tu Android. Ideal para probar la app.</p>
+          <a id="btn-debug" href="https://github.com/MeaCore-Enterprise/FlowClow/releases/latest/download/app-debug.apk"
+             class="btn btn-primary" download>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Descargar APK
+          </a>
+        </div>
+        <div class="card">
+          <div class="card-icon">🚀</div>
+          <h3 class="card-title">Releases en GitHub</h3>
+          <p class="card-desc">Todas las versiones, notas de cambios y APKs de release.</p>
+          <a href="https://github.com/MeaCore-Enterprise/FlowClow/releases"
+             class="btn btn-secondary" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            Ver en GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Installation steps -->
+    <div class="download-section">
+      <p class="section-title">Cómo instalar en Android</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-content">
+            <h4>Descarga el APK</h4>
+            <p>Pulsa el botón de descarga arriba. El archivo se llamará <code>app-debug.apk</code>.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-content">
+            <h4>Permite fuentes desconocidas</h4>
+            <p>En tu Android: <strong>Ajustes → Seguridad → Instalar apps desconocidas</strong> → Activa tu navegador o gestor de archivos.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-content">
+            <h4>Abre el archivo</h4>
+            <p>Abre la carpeta de descargas, pulsa el APK y confirma la instalación.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-content">
+            <h4>¡Listo!</h4>
+            <p>FlowClock aparecerá en tu menú de aplicaciones. Tiempo, en flujo. ✅</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>
+        FlowClock &copy; <span id="year"></span> &mdash;
+        <a href="https://github.com/MeaCore-Enterprise/FlowClow" target="_blank" rel="noopener">Código fuente en GitHub</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const REPO = 'MeaCore-Enterprise/FlowClow';
+    const API  = `https://api.github.com/repos/${REPO}/releases/latest`;
+
+    async function loadRelease() {
+      const releaseInfo = document.getElementById('release-info');
+      const releaseAssets = document.getElementById('release-assets');
+      const versionLabel = document.getElementById('version-label');
+
+      try {
+        const res = await fetch(API, {
+          headers: { 'Accept': 'application/vnd.github.v3+json' }
+        });
+
+        if (!res.ok) throw new Error('No hay releases publicados aún');
+
+        const data = await res.json();
+
+        // Version badge
+        versionLabel.textContent = data.tag_name || 'Última versión';
+
+        // Release info card
+        const date = new Date(data.published_at).toLocaleDateString('es-ES', {
+          year: 'numeric', month: 'long', day: 'numeric'
+        });
+
+        const bodyText = (data.body || '').replace(/##[^\n]*/g, '').trim();
+
+        releaseInfo.innerHTML = `
+          <div class="release-header">
+            <span class="release-name">🏷️ ${data.name || data.tag_name}</span>
+            <span class="release-date">${date}</span>
+          </div>
+          ${bodyText ? `<p class="release-body">${bodyText}</p>` : ''}
+          <div class="release-assets" id="release-assets"></div>
+        `;
+
+        const assetsContainer = document.getElementById('release-assets');
+        if (data.assets && data.assets.length > 0) {
+          data.assets.forEach(asset => {
+            const isApk = asset.name.endsWith('.apk');
+            const icon = isApk ? '⬇️' : '📦';
+            const size = (asset.size / 1024 / 1024).toFixed(1);
+            const a = document.createElement('a');
+            a.href = asset.browser_download_url;
+            a.className = 'asset-btn';
+            a.download = asset.name;
+            a.innerHTML = `${icon} ${asset.name} <span style="opacity:0.5; font-size:0.75em;">(${size} MB)</span>`;
+            assetsContainer.appendChild(a);
+          });
+
+          // Update debug button to point to latest release asset
+          const debugAsset = data.assets.find(a => a.name.includes('debug'));
+          if (debugAsset) {
+            document.getElementById('btn-debug').href = debugAsset.browser_download_url;
+          }
+        } else {
+          assetsContainer.innerHTML = `<p style="color:var(--muted); font-size:0.85rem;">Los APKs se generan automáticamente con GitHub Actions en cada release.</p>`;
+        }
+
+      } catch (err) {
+        // No releases yet
+        versionLabel.textContent = 'Próximamente';
+        releaseInfo.innerHTML = `
+          <div style="text-align:center; padding: 16px 0;">
+            <p style="font-size:2rem; margin-bottom:12px;">🚧</p>
+            <p style="font-weight:600; margin-bottom:6px;">Aún no hay releases publicados</p>
+            <p style="color:var(--muted); font-size:0.88rem;">Haz push a main o crea un tag <code style="background:rgba(255,255,255,0.07); padding:2px 6px; border-radius:4px; font-family: monospace;">v1.0.0</code> en GitHub para que Actions genere los APKs automáticamente.</p>
+          </div>
+        `;
+      }
+    }
+
+    loadRelease();
+  </script>
+</body>
+</html>
