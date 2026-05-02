@@ -1,0 +1,21 @@
+node_modules/
+dist/
+
+# Keystore — nunca subir al repositorio
+android/flowclock.jks
+*.jks
+*.keystore
+
+# Android build output
+android/app/build/
+android/.gradle/
+
+# Gradle
+.gradle/
+
+# Local env
+.env
+.env.local
+
+# Archivo local con secrets (no subir nunca)
+GITHUB_SECRETS.txt
