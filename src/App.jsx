@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import UpdateNotifier, { UpdateBadge, UpdateSheet } from "./updater/UpdateNotifier.jsx";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const pad = (n) => String(n).padStart(2, "0");
@@ -578,14 +579,25 @@ function AssistantTab() {
 }
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
+const APP_VERSION = typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "1.0.1";
+
 export default function App() {
   const [tab, setTab] = useState("clock");
   const [now, setNow] = useState(new Date());
+  const [updateSheetOpen, setUpdateSheetOpen] = useState(false);
+
   useEffect(() => { const t = setInterval(() => setNow(new Date()), 30000); return () => clearInterval(t); }, []);
 
   return (
     <>
       <GlobalStyles />
+
+      {/* Auto-update controller – mounts once, starts background checks */}
+      <UpdateNotifier currentVersion={APP_VERSION} />
+
+      {/* Full update modal (also auto-opens on discovery) */}
+      <UpdateSheet open={updateSheetOpen} onClose={() => setUpdateSheetOpen(false)} />
+
       <div className="splash">
         <div className="splash-logo">⏳</div>
         <div className="splash-name">FlowClock</div>
@@ -596,8 +608,12 @@ export default function App() {
         <div className="app-header">
           <div className="app-header-inner">
             <div className="app-logo">FlowClock</div>
-            <div className="header-time">
-              {pad(now.getHours())}:{pad(now.getMinutes())}
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              {/* Update badge – only visible when a newer version exists */}
+              <UpdateBadge onOpen={() => setUpdateSheetOpen(true)} />
+              <div className="header-time">
+                {pad(now.getHours())}:{pad(now.getMinutes())}
+              </div>
             </div>
           </div>
         </div>

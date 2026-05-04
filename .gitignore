@@ -1,5 +1,5 @@
 # Dependencies
-/node_modules
+node_modules/
 /.pnp
 .pnp.js
 
@@ -7,7 +7,12 @@
 /coverage
 
 # Production
-/dist
+dist/
+
+# Keystore — nunca subir al repositorio
+android/flowclock.jks
+*.jks
+*.keystore
 
 # Capacitor
 /android/.gradle
@@ -15,6 +20,9 @@
 /android/app/build
 /android/local.properties
 /android/app/google-services.json
+
+# Gradle
+.gradle/
 
 # Misc
 .DS_Store
@@ -41,6 +49,9 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Archivo local con secrets (no subir nunca)
+GITHUB_SECRETS.txt
 
 # Vite
 vite.config.js.timestamp-*
